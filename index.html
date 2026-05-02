@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Disney+ Hotstar — Complete A3 System Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #060810; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 24px; }
+  svg { max-width: 1000px; width: 100%; height: auto; display: block; box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.04); }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 1400 1980" xmlns="http://www.w3.org/2000/svg">
+<defs>
+
+  <!-- Arrows -->
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 2L8 5L2 8" fill="none" stroke="#4A90C4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 2L8 5L2 8" fill="none" stroke="#52A86A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+
+  <!-- Gradients -->
+  <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#080C16"/>
+    <stop offset="100%" stop-color="#060810"/>
+  </linearGradient>
+
+  <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#0C1220"/>
+    <stop offset="60%" stop-color="#0A1028"/>
+    <stop offset="100%" stop-color="#0D0818"/>
+  </linearGradient>
+
+  <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#C8A84B" stop-opacity="0"/>
+    <stop offset="20%" stop-color="#C8A84B"/>
+    <stop offset="80%" stop-color="#B8965A"/>
+    <stop offset="100%" stop-color="#B8965A" stop-opacity="0"/>
+  </linearGradient>
+
+  <linearGradient id="blueLine" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#4A90C4" stop-opacity="0"/>
+    <stop offset="20%" stop-color="#4A90C4"/>
+    <stop offset="80%" stop-color="#3A7AB4"/>
+    <stop offset="100%" stop-color="#3A7AB4" stop-opacity="0"/>
+  </linearGradient>
+
+  <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#0F1628"/>
+    <stop offset="100%" stop-color="#0B1020"/>
+  </linearGradient>
+
+  <linearGradient id="pipeGrad" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#0F1830"/>
+    <stop offset="100%" stop-color="#0C1428"/>
+  </linearGradient>
+
+  <linearGradient id="goldCard" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#16110A"/>
+    <stop offset="100%" stop-color="#0E0C08"/>
+  </linearGradient>
+
+  <linearGradient id="spikeGrad" x1="0" y1="1" x2="0" y2="0">
+    <stop offset="0%" stop-color="#C8A84B" stop-opacity="0.4"/>
+    <stop offset="100%" stop-color="#C8A84B" stop-opacity="0.85"/>
+  </linearGradient>
+
+  <linearGradient id="normalBar" x1="0" y1="1" x2="0" y2="0">
+    <stop offset="0%" stop-color="#1A2542" stop-opacity="0.4"/>
+    <stop offset="100%" stop-color="#1A2542" stop-opacity="0.7"/>
+  </linearGradient>
+
+  <linearGradient id="greenCard" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#0A1610"/>
+    <stop offset="100%" stop-color="#080E0C"/>
+  </linearGradient>
+
+  <linearGradient id="purpleCard" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#100A18"/>
+    <stop offset="100%" stop-color="#0C0812"/>
+  </linearGradient>
+
+  <linearGradient id="redCard" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#160A0A"/>
+    <stop offset="100%" stop-color="#100808"/>
+  </linearGradient>
+
+  <linearGradient id="tierFree" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#0F1830"/>
+    <stop offset="100%" stop-color="#0C1428"/>
+  </linearGradient>
+
+  <linearGradient id="tierSuper" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#111530"/>
+    <stop offset="100%" stop-color="#0E1228"/>
+  </linearGradient>
+
+  <linearGradient id="tierPremium" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#14102A"/>
+    <stop offset="100%" stop-color="#101030"/>
+  </linearGradient>
+
+  <!-- Fine grid pattern for texture -->
+  <pattern id="grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+    <path d="M28 0H0V28" fill="none" stroke="#ffffff" stroke-width="0.25" stroke-opacity="0.025"/>
+  </pattern>
+
+  <!-- Dot pattern -->
+  <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+    <circle cx="10" cy="10" r="0.8" fill="#ffffff" fill-opacity="0.04"/>
+  </pattern>
+
+  <!-- Clip paths -->
+  <clipPath id="headerClip">
+    <rect x="0" y="0" width="1400" height="155"/>
+  </clipPath>
+
+  <!-- Filter: subtle glow -->
+  <filter id="glowGold" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="3" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+
+  <filter id="glowBlue" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="2" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+
+</defs>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- BACKGROUND -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="0" y="0" width="1400" height="1980" fill="url(#bgGrad)"/>
+<rect x="0" y="0" width="1400" height="1980" fill="url(#grid)"/>
+
+<!-- Subtle radial atmosphere -->
+<radialGradient id="atmos1" cx="15%" cy="8%" r="35%">
+  <stop offset="0%" stop-color="#1A3060" stop-opacity="0.18"/>
+  <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="atmos2" cx="85%" cy="5%" r="30%">
+  <stop offset="0%" stop-color="#2A1840" stop-opacity="0.14"/>
+  <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+</radialGradient>
+<rect x="0" y="0" width="1400" height="1980" fill="url(#atmos1)"/>
+<rect x="0" y="0" width="1400" height="1980" fill="url(#atmos2)"/>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HEADER -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="0" y="0" width="1400" height="155" fill="url(#headerGrad)" clip-path="url(#headerClip)"/>
+<rect x="0" y="0" width="1400" height="155" fill="url(#dots)" clip-path="url(#headerClip)"/>
+
+<!-- Left accent bar — thin gold -->
+<rect x="40" y="24" width="2" height="107" rx="1" fill="#C8A84B" opacity="0.9"/>
+<!-- Secondary bar -->
+<rect x="46" y="36" width="1" height="83" rx="0.5" fill="#C8A84B" opacity="0.3"/>
+
+<!-- Brand name -->
+<text x="62" y="82" font-family="'Playfair Display', Georgia, serif" font-size="52" font-weight="900" fill="#FFFFFF" letter-spacing="-1">Hotstar</text>
+<text x="62" y="122" font-family="'Outfit', sans-serif" font-size="30" font-weight="300" fill="#4A90C4" letter-spacing="6">Case Study</text>
+
+<!-- Subtitle -->
+<text x="316" y="76" font-family="'Outfit', sans-serif" font-size="18" font-weight="300" fill="#A1C1E1" letter-spacing="3">SYSTEM DESIGN CASE STUDY</text>
+<rect x="316" y="84" width="220" height="0.75" fill="url(#goldLine)" opacity="0.6"/>
+<text x="316" y="106" font-family="'DM Mono', monospace" font-size="14" font-weight="300" fill="#8AB4D4" letter-spacing="1">India's Largest OTT Platform</text>
+
+<!-- Divider line at bottom of header -->
+<rect x="0" y="153" width="1400" height="1" fill="url(#goldLine)" opacity="0.5"/>
+<rect x="0" y="154" width="1400" height="1" fill="url(#blueLine)" opacity="0.2"/>
+
+<!-- KPI Cards -->
+<rect x="880" y="22" width="148" height="112" rx="6" fill="#0A0E1C" stroke="#1A2A40" stroke-width="1"/>
+<rect x="880" y="22" width="148" height="3" rx="1.5" fill="#4A90C4" opacity="0.8"/>
+<text x="954" y="72" font-family="'Playfair Display', serif" font-size="38" font-weight="700" fill="#4A90C4" text-anchor="middle" filter="url(#glowBlue)">61M</text>
+<text x="954" y="94" font-family="'DM Mono', monospace" font-size="13" fill="#9AB4CD" text-anchor="middle" letter-spacing="1">CONCURRENT</text>
+<text x="954" y="112" font-family="'DM Mono', monospace" font-size="13" fill="#9AB4CD" text-anchor="middle" letter-spacing="1">VIEWERS</text>
+
+<rect x="1046" y="22" width="148" height="112" rx="6" fill="#0A0E1C" stroke="#1A2A40" stroke-width="1"/>
+<rect x="1046" y="22" width="148" height="3" rx="1.5" fill="#C8A84B" opacity="0.8"/>
+<text x="1120" y="72" font-family="'Playfair Display', serif" font-size="38" font-weight="700" fill="#C8A84B" text-anchor="middle" filter="url(#glowGold)">10M</text>
+<text x="1120" y="94" font-family="'DM Mono', monospace" font-size="13" fill="#D4B872" text-anchor="middle" letter-spacing="1">REQUESTS</text>
+<text x="1120" y="112" font-family="'DM Mono', monospace" font-size="13" fill="#D4B872" text-anchor="middle" letter-spacing="1">PER MINUTE</text>
+
+<rect x="1212" y="22" width="148" height="112" rx="6" fill="#0A0E1C" stroke="#1A2A40" stroke-width="1"/>
+<rect x="1212" y="22" width="148" height="3" rx="1.5" fill="#52A86A" opacity="0.8"/>
+<text x="1286" y="72" font-family="'Playfair Display', serif" font-size="38" font-weight="700" fill="#52A86A" text-anchor="middle">&lt;100</text>
+<text x="1286" y="94" font-family="'DM Mono', monospace" font-size="13" fill="#8AB49A" text-anchor="middle" letter-spacing="1">P99 API</text>
+<text x="1286" y="112" font-family="'DM Mono', monospace" font-size="13" fill="#8AB49A" text-anchor="middle" letter-spacing="1">LATENCY ms</text>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SECTION LABEL: OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="40" y="174" width="3" height="16" rx="1.5" fill="#4A90C4"/>
+<text x="52" y="187" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#4A90C4" letter-spacing="3">OVERVIEW &amp; CORE PROBLEM</text>
+
+<!-- Platform Overview Card -->
+<rect x="40" y="200" width="380" height="148" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="40" y="200" width="380" height="2" rx="1" fill="#4A90C4" opacity="0.6"/>
+<text x="60" y="228" font-family="'Outfit', sans-serif" font-size="16" font-weight="600" fill="#A1C1E1" letter-spacing="1">Platform Overview</text>
+<rect x="60" y="234" width="40" height="0.75" fill="#4A90C4" opacity="0.5"/>
+<text x="60" y="258" font-family="'Outfit', sans-serif" font-size="14" fill="#A1B1C1">·  India's #1 OTT · Launched 2015</text>
+<text x="60" y="277" font-family="'Outfit', sans-serif" font-size="14" fill="#A1B1C1">·  Smartphone-first · Multi-language</text>
+<text x="60" y="296" font-family="'Outfit', sans-serif" font-size="14" fill="#A1B1C1">·  IPL exclusive digital rights</text>
+<text x="60" y="315" font-family="'Outfit', sans-serif" font-size="14" fill="#A1B1C1">·  Tier 2/3 city penetration</text>
+
+<!-- Traffic Tsunami Card -->
+<rect x="438" y="200" width="464" height="148" rx="6" fill="url(#goldCard)" stroke="#2A1E0A" stroke-width="1"/>
+<rect x="438" y="200" width="464" height="2" rx="1" fill="#C8A84B" opacity="0.7"/>
+<text x="458" y="228" font-family="'Outfit', sans-serif" font-size="16" font-weight="600" fill="#C8A84B" letter-spacing="1">The Traffic Tsunami</text>
+<rect x="458" y="234" width="40" height="0.75" fill="#C8A84B" opacity="0.5"/>
+
+<!-- Mini chart bars -->
+<rect x="462" y="258" width="18" height="68" rx="2" fill="url(#normalBar)"/>
+<rect x="486" y="266" width="18" height="60" rx="2" fill="url(#normalBar)"/>
+<rect x="510" y="274" width="18" height="52" rx="2" fill="url(#normalBar)"/>
+<rect x="534" y="278" width="18" height="48" rx="2" fill="url(#normalBar)"/>
+<rect x="558" y="254" width="18" height="72" rx="2" fill="url(#spikeGrad)"/>
+<rect x="582" y="230" width="18" height="96" rx="2" fill="url(#spikeGrad)"/>
+<rect x="606" y="246" width="18" height="80" rx="2" fill="url(#spikeGrad)"/>
+<rect x="630" y="270" width="18" height="56" rx="2" fill="url(#normalBar)"/>
+<rect x="462" y="326" width="186" height="0.75" fill="#2A2010" opacity="0.8"/>
+<text x="480" y="343" font-family="'DM Mono', monospace" font-size="13" fill="#A1A1AA" text-anchor="middle">Normal</text>
+<text x="595" y="343" font-family="'DM Mono', monospace" font-size="13" fill="#C8A84B" text-anchor="middle">Match Start</text>
+
+<text x="680" y="270" font-family="'Playfair Display', serif" font-size="24" font-weight="700" fill="#C8A84B">20% → 90%</text>
+<text x="680" y="292" font-family="'Outfit', sans-serif" font-size="14" fill="#C4B49A">capacity in seconds</text>
+
+<!-- Problem Cards -->
+<rect x="920" y="200" width="450" height="42" rx="5" fill="url(#purpleCard)" stroke="#2A1840" stroke-width="1"/>
+<rect x="920" y="200" width="3" height="42" rx="1.5" fill="#8B6BC4"/>
+<text x="938" y="220" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#8B6BC4" letter-spacing="1">THUNDERING HERD</text>
+<text x="938" y="235" font-family="'Outfit', sans-serif" font-size="14" fill="#C4B4E4">Millions log in simultaneously. No warning.</text>
+
+<rect x="920" y="250" width="450" height="42" rx="5" fill="url(#greenCard)" stroke="#0A2015" stroke-width="1"/>
+<rect x="920" y="250" width="3" height="42" rx="1.5" fill="#52A86A"/>
+<text x="938" y="270" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#52A86A" letter-spacing="1">NETWORK VARIANCE</text>
+<text x="938" y="285" font-family="'Outfit', sans-serif" font-size="14" fill="#8AD4A4">3G/4G to Fiber across 1000s of devices.</text>
+
+<rect x="920" y="300" width="450" height="42" rx="5" fill="url(#goldCard)" stroke="#2A1A05" stroke-width="1"/>
+<rect x="920" y="300" width="3" height="42" rx="1.5" fill="#C8A84B"/>
+<text x="938" y="320" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#C8A84B" letter-spacing="1">BLAST RADIUS</text>
+<text x="938" y="335" font-family="'Outfit', sans-serif" font-size="14" fill="#D4C49A">Video load must not crash auth or login.</text>
+
+<!-- Section Divider -->
+<rect x="40" y="362" width="1330" height="0.75" fill="url(#blueLine)" opacity="0.3"/>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- BUSINESS MODEL -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="40" y="374" width="3" height="16" rx="1.5" fill="#C8A84B"/>
+<text x="52" y="387" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#C8A84B" letter-spacing="3">BUSINESS MODEL</text>
+
+<!-- Subscription Tiers -->
+<rect x="40" y="397" width="450" height="158" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="40" y="397" width="450" height="2" rx="1" fill="#4A90C4" opacity="0.5"/>
+<text x="60" y="424" font-family="'Outfit', sans-serif" font-size="15" font-weight="500" fill="#A1C1E1" letter-spacing="1">Subscription Tiers</text>
+
+<!-- FREE tier -->
+<rect x="58" y="433" width="414" height="34" rx="4" fill="url(#tierFree)" stroke="#1E2E50" stroke-width="0.75"/>
+<rect x="58" y="433" width="3" height="34" rx="1.5" fill="#4A90C4" opacity="0.7"/>
+<text x="76" y="455" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#B0C8E0">FREE</text>
+<text x="130" y="455" font-family="'Outfit', sans-serif" font-size="14" fill="#A1C1E1">Ad-supported · Vast Library</text>
+
+<!-- SUPER tier -->
+<rect x="58" y="474" width="414" height="34" rx="4" fill="url(#tierSuper)" stroke="#1A2A50" stroke-width="0.75"/>
+<rect x="58" y="474" width="3" height="34" rx="1.5" fill="#7A9FBF" opacity="0.9"/>
+<text x="76" y="496" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#8AAFD0">SUPER</text>
+<text x="136" y="496" font-family="'Outfit', sans-serif" font-size="14" fill="#A1C1E1">2 screens · HD · No live sports</text>
+
+<!-- PREMIUM tier -->
+<rect x="58" y="515" width="414" height="34" rx="4" fill="url(#tierPremium)" stroke="#2A2060" stroke-width="0.75"/>
+<rect x="58" y="515" width="3" height="34" rx="1.5" fill="#C8A84B" opacity="0.9"/>
+<text x="76" y="537" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#C8A84B">PREMIUM</text>
+<text x="152" y="537" font-family="'Outfit', sans-serif" font-size="14" fill="#D4C49A">4K · 4 screens · Live sports</text>
+
+<text x="60" y="560" font-family="'Outfit', sans-serif" font-size="14" fill="#A1C1E1">Telecom bundles: Jio · Airtel auto-login</text>
+
+<!-- Revenue Mix -->
+<rect x="510" y="397" width="380" height="158" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="510" y="397" width="380" height="2" rx="1" fill="#C8A84B" opacity="0.5"/>
+<text x="530" y="424" font-family="'Outfit', sans-serif" font-size="15" font-weight="500" fill="#D4C4A4" letter-spacing="1">Revenue Mix</text>
+
+<!-- Donut chart — refined -->
+<circle cx="700" cy="500" r="48" fill="none" stroke="#0F1628" stroke-width="20"/>
+<circle cx="700" cy="500" r="48" fill="none" stroke="#C8A84B" stroke-width="20" stroke-dasharray="100 201" stroke-dashoffset="0" opacity="0.9"/>
+<circle cx="700" cy="500" r="48" fill="none" stroke="#4A90C4" stroke-width="20" stroke-dasharray="80 201" stroke-dashoffset="-100" opacity="0.85"/>
+<circle cx="700" cy="500" r="48" fill="none" stroke="#C07850" stroke-width="20" stroke-dasharray="70 201" stroke-dashoffset="-180" opacity="0.8"/>
+<text x="700" y="495" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1E1" text-anchor="middle">REVENUE</text>
+<text x="700" y="511" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1E1" text-anchor="middle">SPLIT</text>
+
+<circle cx="600" cy="490" r="5" fill="#C8A84B"/>
+<text x="612" y="494" font-family="'Outfit', sans-serif" font-size="14" fill="#D4C4A4">Ads</text>
+<circle cx="785" cy="482" r="5" fill="#4A90C4"/>
+<text x="797" y="486" font-family="'Outfit', sans-serif" font-size="14" fill="#A1C1E1">Sub</text>
+<circle cx="785" cy="504" r="5" fill="#C07850"/>
+<text x="797" y="508" font-family="'Outfit', sans-serif" font-size="14" fill="#D4A490">IPL</text>
+
+<!-- IPL Effect -->
+<rect x="910" y="397" width="460" height="158" rx="6" fill="url(#goldCard)" stroke="#2A1A05" stroke-width="1"/>
+<rect x="910" y="397" width="460" height="2" rx="1" fill="#C8A84B" opacity="0.7"/>
+<text x="1140" y="424" font-family="'Outfit', sans-serif" font-size="15" font-weight="500" fill="#D4C4A4" text-anchor="middle" letter-spacing="1">IPL Effect 🏏</text>
+<rect x="990" y="432" width="300" height="0.75" fill="#2A1E08" opacity="0.8"/>
+<text x="1140" y="470" font-family="'Outfit', sans-serif" font-size="15" fill="#D4C49A" text-anchor="middle">Exclusive digital rights drove</text>
+<text x="1140" y="502" font-family="'Playfair Display', serif" font-size="28" font-weight="700" fill="#C8A84B" text-anchor="middle">Overnight</text>
+<text x="1140" y="530" font-family="'Playfair Display', serif" font-size="28" font-weight="700" fill="#C8A84B" text-anchor="middle">Acquisition</text>
+
+<!-- Section Divider -->
+<rect x="40" y="568" width="1330" height="0.75" fill="url(#blueLine)" opacity="0.3"/>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- KEY FEATURES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="40" y="580" width="3" height="16" rx="1.5" fill="#52A86A"/>
+<text x="52" y="593" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#52A86A" letter-spacing="3">KEY FEATURES</text>
+
+<!-- Row 1 -->
+<rect x="40" y="605" width="250" height="68" rx="5" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="40" y="605" width="250" height="2" rx="1" fill="#4A90C4" opacity="0.5"/>
+<text x="60" y="634" font-family="'Outfit', sans-serif" font-size="20">🔐</text>
+<text x="90" y="629" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#A1C1E1">Identity &amp; Access</text>
+<text x="90" y="647" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1">OTP · JWT · Kids mode</text>
+
+<rect x="308" y="605" width="250" height="68" rx="5" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="308" y="605" width="250" height="2" rx="1" fill="#4A90C4" opacity="0.5"/>
+<text x="328" y="634" font-family="'Outfit', sans-serif" font-size="20">🔍</text>
+<text x="358" y="629" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#A1C1E1">Search &amp; Discovery</text>
+<text x="358" y="647" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1">Multi-lang · ML engine</text>
+
+<rect x="576" y="605" width="250" height="68" rx="5" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="576" y="605" width="250" height="2" rx="1" fill="#C8A84B" opacity="0.5"/>
+<text x="596" y="634" font-family="'Outfit', sans-serif" font-size="20">▶</text>
+<text x="626" y="629" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#D4C4A4">Playback &amp; Sync</text>
+<text x="626" y="647" font-family="'DM Mono', monospace" font-size="13" fill="#D4C4A4">Cross-device · Auto ABR</text>
+
+<rect x="844" y="605" width="250" height="68" rx="5" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="844" y="605" width="250" height="2" rx="1" fill="#C8A84B" opacity="0.5"/>
+<text x="864" y="634" font-family="'Outfit', sans-serif" font-size="20">📡</text>
+<text x="894" y="629" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#D4C4A4">Live Sports</text>
+<text x="894" y="647" font-family="'DM Mono', monospace" font-size="13" fill="#D4C4A4">Scoreboard · Replays</text>
+
+<rect x="1112" y="605" width="258" height="68" rx="5" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="1112" y="605" width="258" height="2" rx="1" fill="#52A86A" opacity="0.5"/>
+<text x="1132" y="634" font-family="'Outfit', sans-serif" font-size="20">💾</text>
+<text x="1162" y="629" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#8AD4A4">Downloads</text>
+<text x="1162" y="647" font-family="'DM Mono', monospace" font-size="13" fill="#A4D4B4">DRM-encrypted tiers</text>
+
+<!-- Row 2 -->
+<rect x="308" y="682" width="378" height="56" rx="5" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="308" y="682" width="378" height="2" rx="1" fill="#4A90C4" opacity="0.4"/>
+<text x="328" y="712" font-family="'Outfit', sans-serif" font-size="20">🌐</text>
+<text x="358" y="707" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#A1C1E1">Multi-CDN Delivery</text>
+<text x="358" y="724" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1">Akamai · CloudFront · Cloudflare</text>
+
+<rect x="706" y="682" width="390" height="56" rx="5" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="706" y="682" width="390" height="2" rx="1" fill="#8B6BC4" opacity="0.4"/>
+<text x="726" y="712" font-family="'Outfit', sans-serif" font-size="20">🤖</text>
+<text x="756" y="707" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#C4B4E4">ML Personalization</text>
+<text x="756" y="724" font-family="'DM Mono', monospace" font-size="13" fill="#C4B4E4">Recommendations · Pred. scaling</text>
+
+<!-- Section Divider -->
+<rect x="40" y="751" width="1330" height="0.75" fill="url(#blueLine)" opacity="0.3"/>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- HIGH-LEVEL ARCHITECTURE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="40" y="762" width="3" height="16" rx="1.5" fill="#8B6BC4"/>
+<text x="52" y="775" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#8B6BC4" letter-spacing="3">HIGH-LEVEL ARCHITECTURE</text>
+
+<rect x="40" y="787" width="1330" height="298" rx="8" fill="#08090F" stroke="#141E32" stroke-width="1"/>
+<rect x="40" y="787" width="1330" height="298" fill="url(#dots)" rx="8"/>
+
+<!-- CLIENT LAYER -->
+<rect x="58" y="805" width="1294" height="48" rx="5" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="58" y="805" width="1294" height="2" rx="1" fill="#4A90C4" opacity="0.4"/>
+<text x="78" y="834" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#A1C1E1" letter-spacing="2">CLIENT LAYER</text>
+<text x="220" y="834" font-family="'Outfit', sans-serif" font-size="14" fill="#A1C1D1">Mobile (iOS/Android)  ·  Web Browser  ·  Smart TV  ·  Set-top Box</text>
+<text x="1000" y="834" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1">SDUI: Server-driven rendering</text>
+
+<!-- Connector -->
+<line x1="705" y1="853" x2="705" y2="873" stroke="#1E3080" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arrow)"/>
+
+<!-- API GATEWAY -->
+<rect x="178" y="873" width="1054" height="38" rx="5" fill="#0A1428" stroke="#1A3060" stroke-width="1"/>
+<rect x="178" y="873" width="1054" height="2" rx="1" fill="#4A90C4" opacity="0.6"/>
+<text x="705" y="897" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#4A90C4" text-anchor="middle" letter-spacing="1">API GATEWAY  ·  Auth  ·  Rate Limiting (Token Bucket)  ·  Request Routing  ·  Traffic Control</text>
+
+<!-- Connector -->
+<line x1="705" y1="911" x2="705" y2="931" stroke="#1E3080" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arrow)"/>
+
+<!-- Microservices Row -->
+<rect x="178" y="931" width="158" height="52" rx="5" fill="#09101E" stroke="#142030" stroke-width="1"/>
+<text x="257" y="954" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#A1C1E1" text-anchor="middle">Identity</text>
+<text x="257" y="970" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1" text-anchor="middle">Auth / JWT</text>
+
+<rect x="346" y="931" width="158" height="52" rx="5" fill="#09101E" stroke="#142030" stroke-width="1"/>
+<text x="425" y="954" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#A1C1E1" text-anchor="middle">Catalogue</text>
+<text x="425" y="970" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1" text-anchor="middle">Content meta</text>
+
+<rect x="514" y="931" width="158" height="52" rx="5" fill="#09101E" stroke="#142030" stroke-width="1"/>
+<text x="593" y="954" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#A1C1E1" text-anchor="middle">Streaming</text>
+<text x="593" y="970" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1" text-anchor="middle">Video delivery</text>
+
+<rect x="682" y="931" width="158" height="52" rx="5" fill="#09101E" stroke="#142030" stroke-width="1"/>
+<text x="761" y="954" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#A1C1E1" text-anchor="middle">Recommend</text>
+<text x="761" y="970" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1" text-anchor="middle">ML engine</text>
+
+<rect x="850" y="931" width="158" height="52" rx="5" fill="#09101E" stroke="#142030" stroke-width="1"/>
+<text x="929" y="954" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#A1C1E1" text-anchor="middle">Payments</text>
+<text x="929" y="970" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1D1" text-anchor="middle">Subscription</text>
+
+<rect x="1050" y="927" width="178" height="60" rx="5" fill="url(#purpleCard)" stroke="#2A1840" stroke-width="1"/>
+<rect x="1050" y="927" width="178" height="2" rx="1" fill="#8B6BC4" opacity="0.6"/>
+<text x="1139" y="951" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#C4B4E4" text-anchor="middle">Circuit Breakers</text>
+<text x="1139" y="966" font-family="'DM Mono', monospace" font-size="13" fill="#C4B4E4" text-anchor="middle">Isolate failing</text>
+<text x="1139" y="982" font-family="'DM Mono', monospace" font-size="13" fill="#C4B4E4" text-anchor="middle">microservices</text>
+
+<!-- Connector -->
+<line x1="705" y1="983" x2="705" y2="1003" stroke="#1E3080" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arrow)"/>
+
+<!-- DATA LAYER -->
+<rect x="58" y="1003" width="1294" height="56" rx="5" fill="#09101E" stroke="#142030" stroke-width="1"/>
+<rect x="58" y="1003" width="1294" height="2" rx="1" fill="#52A86A" opacity="0.4"/>
+<text x="78" y="1026" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#8AD4A4" letter-spacing="2">DATA LAYER</text>
+<text x="220" y="1026" font-family="'Outfit', sans-serif" font-size="14" fill="#A4D4B4">ScyllaDB (sessions)  ·  Redis (cache)  ·  Amazon S3 (video)  ·  Kafka (events)  ·  Trino (analytics)</text>
+<text x="220" y="1045" font-family="'DM Mono', monospace" font-size="13" fill="#94C4A4">AWS EKS · Multi-cluster Kubernetes · Spot Instances · EMR + Spark (big data)</text>
+
+<!-- Section Divider -->
+<rect x="40" y="1097" width="1330" height="0.75" fill="url(#blueLine)" opacity="0.3"/>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- STREAMING PIPELINE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="40" y="1108" width="3" height="16" rx="1.5" fill="#4A90C4"/>
+<text x="52" y="1121" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#4A90C4" letter-spacing="3">END-TO-END VIDEO STREAMING PIPELINE</text>
+
+<rect x="40" y="1133" width="1330" height="240" rx="8" fill="#08090F" stroke="#141E32" stroke-width="1"/>
+<rect x="40" y="1133" width="1330" height="240" fill="url(#dots)" rx="8"/>
+
+<!-- Pipeline stages -->
+<rect x="58" y="1155" width="198" height="58" rx="5" fill="url(#pipeGrad)" stroke="#1A2A4A" stroke-width="1"/>
+<rect x="58" y="1155" width="198" height="2" rx="1" fill="#4A90C4" opacity="0.5"/>
+<text x="157" y="1180" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#4A90C4" text-anchor="middle" letter-spacing="2">INGEST</text>
+<text x="157" y="1198" font-family="'Outfit', sans-serif" font-size="13" fill="#A1C1D1" text-anchor="middle">Camera / backup pts</text>
+<line x1="256" y1="1184" x2="276" y2="1184" stroke="#1E3060" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="286" y="1155" width="198" height="58" rx="5" fill="url(#pipeGrad)" stroke="#1A2A4A" stroke-width="1"/>
+<rect x="286" y="1155" width="198" height="2" rx="1" fill="#4A90C4" opacity="0.5"/>
+<text x="385" y="1180" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#4A90C4" text-anchor="middle" letter-spacing="2">VALIDATE</text>
+<text x="385" y="1198" font-family="'Outfit', sans-serif" font-size="13" fill="#A1C1D1" text-anchor="middle">Stream / DRM checks</text>
+<line x1="484" y1="1184" x2="504" y2="1184" stroke="#1E3060" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="514" y="1150" width="238" height="68" rx="5" fill="url(#goldCard)" stroke="#2A1E08" stroke-width="1"/>
+<rect x="514" y="1150" width="238" height="2" rx="1" fill="#C8A84B" opacity="0.7"/>
+<text x="633" y="1174" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#C8A84B" text-anchor="middle" letter-spacing="2">TRANSCODE</text>
+<text x="633" y="1191" font-family="'Outfit', sans-serif" font-size="13" fill="#D4C4A4" text-anchor="middle">144p / 360p / 720p / 1080p</text>
+<text x="633" y="1207" font-family="'DM Mono', monospace" font-size="13" fill="#C8A84B" text-anchor="middle">HLS / DASH Segments</text>
+<line x1="752" y1="1184" x2="772" y2="1184" stroke="#1E3060" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="782" y="1155" width="198" height="58" rx="5" fill="url(#pipeGrad)" stroke="#1A2A4A" stroke-width="1"/>
+<rect x="782" y="1155" width="198" height="2" rx="1" fill="#4A90C4" opacity="0.5"/>
+<text x="881" y="1180" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#4A90C4" text-anchor="middle" letter-spacing="2">ORIGIN</text>
+<text x="881" y="1198" font-family="'Outfit', sans-serif" font-size="13" fill="#A1C1D1" text-anchor="middle">Amazon S3 shield</text>
+<line x1="980" y1="1184" x2="1000" y2="1184" stroke="#1E3060" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="1010" y="1155" width="198" height="58" rx="5" fill="url(#pipeGrad)" stroke="#1A2A4A" stroke-width="1"/>
+<rect x="1010" y="1155" width="198" height="2" rx="1" fill="#4A90C4" opacity="0.5"/>
+<text x="1109" y="1180" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#4A90C4" text-anchor="middle" letter-spacing="2">CDN</text>
+<text x="1109" y="1198" font-family="'Outfit', sans-serif" font-size="13" fill="#A1C1D1" text-anchor="middle">Multi-CDN Edge nodes</text>
+
+<!-- ABR Player -->
+<line x1="705" y1="1218" x2="705" y2="1238" stroke="#52A86A" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+<text x="720" y="1233" font-family="'Outfit', sans-serif" font-size="13" fill="#8AD4A4">Player requests nearest edge</text>
+
+<rect x="58" y="1238" width="1294" height="48" rx="5" fill="url(#greenCard)" stroke="#0A2A14" stroke-width="1"/>
+<rect x="58" y="1238" width="1294" height="2" rx="1" fill="#52A86A" opacity="0.6"/>
+<text x="705" y="1261" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#52A86A" text-anchor="middle" letter-spacing="2">CLIENT ABR PLAYER</text>
+<text x="705" y="1278" font-family="'Outfit', sans-serif" font-size="14" fill="#A4D4B4" text-anchor="middle">Monitors bandwidth → selects bitrate → requests next segment  ·  WebP/AVIF  ·  HTTP/3 + QUIC</text>
+
+<!-- Kafka -->
+<rect x="58" y="1295" width="1294" height="38" rx="5" fill="url(#purpleCard)" stroke="#1A0E28" stroke-width="1"/>
+<rect x="58" y="1295" width="1294" height="2" rx="1" fill="#8B6BC4" opacity="0.5"/>
+<text x="78" y="1318" font-family="'DM Mono', monospace" font-size="14" font-weight="500" fill="#C4B4E4" letter-spacing="2">KAFKA EVENT STREAM</text>
+<text x="280" y="1318" font-family="'Outfit', sans-serif" font-size="14" fill="#C4B4E4">Telemetry · Buffering spikes · ISP failures · Playback events → Real-time analytics + ML pipeline</text>
+<path d="M705 1295 L705 1286" stroke="#5B4B90" stroke-width="1" fill="none" marker-end="url(#arrow)" stroke-dasharray="3 2"/>
+
+<!-- Section Divider -->
+<rect x="40" y="1384" width="1330" height="0.75" fill="url(#blueLine)" opacity="0.3"/>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCALING & SECURITY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="40" y="1395" width="3" height="16" rx="1.5" fill="#C8A84B"/>
+<text x="52" y="1408" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#C8A84B" letter-spacing="3">SCALING · TESTING · SECURITY</text>
+
+<rect x="40" y="1420" width="370" height="128" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="40" y="1420" width="370" height="2" rx="1" fill="#4A90C4" opacity="0.6"/>
+<text x="60" y="1448" font-family="'Outfit', sans-serif" font-size="16" font-weight="600" fill="#4A90C4">Predictive AI Scaling</text>
+<rect x="60" y="1454" width="50" height="0.75" fill="#4A90C4" opacity="0.4"/>
+<text x="60" y="1474" font-family="'Outfit', sans-serif" font-size="14" fill="#A1C1E1">Ladder-based model pre-warms servers</text>
+<text x="60" y="1491" font-family="'Outfit', sans-serif" font-size="14" fill="#A1C1E1">before traffic spikes hit — not reactive.</text>
+<text x="60" y="1511" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1E1">AWS EKS → thousands of K8s nodes</text>
+<text x="60" y="1527" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1E1">Multi-AZ Geographic Redundancy</text>
+
+<rect x="430" y="1420" width="300" height="128" rx="6" fill="url(#goldCard)" stroke="#2A1A05" stroke-width="1"/>
+<rect x="430" y="1420" width="300" height="2" rx="1" fill="#C8A84B" opacity="0.7"/>
+<text x="580" y="1448" font-family="'Outfit', sans-serif" font-size="16" font-weight="600" fill="#C8A84B" text-anchor="middle">Project Hulk 💪</text>
+<rect x="510" y="1454" width="140" height="0.75" fill="#C8A84B" opacity="0.3"/>
+<text x="580" y="1474" font-family="'Outfit', sans-serif" font-size="14" fill="#D4C4A4" text-anchor="middle">Internal load testing framework</text>
+<text x="580" y="1494" font-family="'DM Mono', monospace" font-size="13" fill="#D4C4A4" text-anchor="middle">· Simulates millions</text>
+<text x="580" y="1510" font-family="'DM Mono', monospace" font-size="13" fill="#D4C4A4" text-anchor="middle">· Login flood &amp; Live match joins</text>
+<text x="580" y="1526" font-family="'DM Mono', monospace" font-size="13" fill="#D4C4A4" text-anchor="middle">· API stress tests</text>
+
+<rect x="750" y="1420" width="280" height="128" rx="6" fill="url(#greenCard)" stroke="#0A2010" stroke-width="1"/>
+<rect x="750" y="1420" width="280" height="2" rx="1" fill="#52A86A" opacity="0.6"/>
+<text x="890" y="1448" font-family="'Outfit', sans-serif" font-size="16" font-weight="600" fill="#52A86A" text-anchor="middle">Piracy Protection</text>
+<rect x="820" y="1454" width="140" height="0.75" fill="#52A86A" opacity="0.3"/>
+<text x="770" y="1478" font-family="'Outfit', sans-serif" font-size="14">🔒</text>
+<text x="800" y="1478" font-family="'Outfit', sans-serif" font-size="14" fill="#A4D4B4">DRM encryption &amp; Keys</text>
+<text x="770" y="1498" font-family="'Outfit', sans-serif" font-size="14">🔏</text>
+<text x="800" y="1498" font-family="'Outfit', sans-serif" font-size="14" fill="#A4D4B4">Live Watermarking</text>
+<text x="770" y="1518" font-family="'Outfit', sans-serif" font-size="14">🚫</text>
+<text x="800" y="1518" font-family="'Outfit', sans-serif" font-size="14" fill="#A4D4B4">Anti-screen record</text>
+
+<rect x="1050" y="1420" width="320" height="128" rx="6" fill="url(#redCard)" stroke="#2A0808" stroke-width="1"/>
+<rect x="1050" y="1420" width="320" height="2" rx="1" fill="#C04A4A" opacity="0.6"/>
+<text x="1070" y="1448" font-family="'Outfit', sans-serif" font-size="16" font-weight="600" fill="#C8A84B">Load Shedding Strategy</text>
+<rect x="1070" y="1454" width="50" height="0.75" fill="#C8A84B" opacity="0.3"/>
+<text x="1070" y="1478" font-family="'Outfit', sans-serif" font-size="14" fill="#D4A494">During peak overload → non-core</text>
+<text x="1070" y="1496" font-family="'Outfit', sans-serif" font-size="14" fill="#D4A494">services (recommendations, search)</text>
+<text x="1070" y="1514" font-family="'Outfit', sans-serif" font-size="14" fill="#D4A494">temporarily disabled.</text>
+<text x="1070" y="1532" font-family="'DM Mono', monospace" font-size="13" fill="#D4A494">100% compute focused on video.</text>
+
+<!-- Section Divider -->
+<rect x="40" y="1561" width="1330" height="0.75" fill="url(#blueLine)" opacity="0.3"/>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- CHALLENGES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="40" y="1572" width="3" height="16" rx="1.5" fill="#C8A84B"/>
+<text x="52" y="1585" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#C8A84B" letter-spacing="3">CHALLENGES → SOLUTIONS</text>
+
+<!-- Row 1 -->
+<rect x="40" y="1597" width="430" height="72" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="40" y="1597" width="430" height="26" rx="5" fill="#0C1428"/>
+<rect x="40" y="1597" width="3" height="72" rx="1.5" fill="#C8A84B"/>
+<text x="255" y="1615" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#C8A84B" text-anchor="middle" letter-spacing="1">THUNDERING HERD</text>
+<text x="60" y="1648" font-family="'Outfit', sans-serif" font-size="14" fill="#8AD4A4">→  Request collapsing  ·  Predictive scaling  ·  Pre-warmed servers</text>
+
+<rect x="490" y="1597" width="430" height="72" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="490" y="1597" width="430" height="26" rx="5" fill="#0C1428"/>
+<rect x="490" y="1597" width="3" height="72" rx="1.5" fill="#4A90C4"/>
+<text x="705" y="1615" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#4A90C4" text-anchor="middle" letter-spacing="1">CACHE MISS STORM</text>
+<text x="510" y="1648" font-family="'Outfit', sans-serif" font-size="14" fill="#8AD4A4">→  Cache randomization  ·  Origin shield tier  ·  CDN logic</text>
+
+<rect x="940" y="1597" width="430" height="72" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="940" y="1597" width="430" height="26" rx="5" fill="#0C1428"/>
+<rect x="940" y="1597" width="3" height="72" rx="1.5" fill="#8B6BC4"/>
+<text x="1155" y="1615" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#8B6BC4" text-anchor="middle" letter-spacing="1">NETWORK CONGESTION</text>
+<text x="960" y="1648" font-family="'Outfit', sans-serif" font-size="14" fill="#8AD4A4">→  HTTP/3 + QUIC  ·  Retry backoff  ·  ABR adaptive bitrate</text>
+
+<!-- Row 2 -->
+<rect x="40" y="1678" width="430" height="72" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="40" y="1678" width="430" height="26" rx="5" fill="#0C1428"/>
+<rect x="40" y="1678" width="3" height="72" rx="1.5" fill="#52A86A"/>
+<text x="255" y="1696" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#52A86A" text-anchor="middle" letter-spacing="1">AUTO-SCALING LAG</text>
+<text x="60" y="1729" font-family="'Outfit', sans-serif" font-size="14" fill="#8AD4A4">→  Ladder-based predictive  ·  Project Hulk tests  ·  Dynamic pods</text>
+
+<rect x="490" y="1678" width="430" height="72" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="490" y="1678" width="430" height="26" rx="5" fill="#0C1428"/>
+<rect x="490" y="1678" width="3" height="72" rx="1.5" fill="#C8A84B"/>
+<text x="705" y="1696" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#C8A84B" text-anchor="middle" letter-spacing="1">CASCADING FAILURES</text>
+<text x="510" y="1729" font-family="'Outfit', sans-serif" font-size="14" fill="#8AD4A4">→  Circuit breakers  ·  Service isolation  ·  Load shedding</text>
+
+<rect x="940" y="1678" width="430" height="72" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="940" y="1678" width="430" height="26" rx="5" fill="#0C1428"/>
+<rect x="940" y="1678" width="3" height="72" rx="1.5" fill="#C07850"/>
+<text x="1155" y="1696" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#E0A890" text-anchor="middle" letter-spacing="1">API OVERLOAD</text>
+<text x="960" y="1729" font-family="'Outfit', sans-serif" font-size="14" fill="#8AD4A4">→  Token bucket rate limit  ·  Edge caching  ·  Exponential backoff</text>
+
+<!-- Section Divider -->
+<rect x="40" y="1762" width="1330" height="0.75" fill="url(#blueLine)" opacity="0.3"/>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- NFR METRICS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="40" y="1773" width="3" height="16" rx="1.5" fill="#52A86A"/>
+<text x="52" y="1786" font-family="'DM Mono', monospace" font-size="13" font-weight="500" fill="#52A86A" letter-spacing="3">NON-FUNCTIONAL METRICS</text>
+
+<rect x="40" y="1798" width="240" height="72" rx="6" fill="url(#greenCard)" stroke="#0A2010" stroke-width="1"/>
+<rect x="40" y="1798" width="240" height="2" rx="1" fill="#52A86A" opacity="0.7"/>
+<text x="160" y="1842" font-family="'Playfair Display', serif" font-size="28" font-weight="700" fill="#52A86A" text-anchor="middle">99.9%</text>
+<text x="160" y="1861" font-family="'DM Mono', monospace" font-size="13" fill="#A4D4B4" text-anchor="middle" letter-spacing="1">AVAILABILITY SLA</text>
+
+<rect x="300" y="1798" width="240" height="72" rx="6" fill="url(#cardGrad)" stroke="#1A2840" stroke-width="1"/>
+<rect x="300" y="1798" width="240" height="2" rx="1" fill="#4A90C4" opacity="0.7"/>
+<text x="420" y="1842" font-family="'Playfair Display', serif" font-size="28" font-weight="700" fill="#4A90C4" text-anchor="middle">&lt;3s</text>
+<text x="420" y="1861" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1E1" text-anchor="middle" letter-spacing="1">VIDEO START TIME</text>
+
+<rect x="560" y="1798" width="240" height="72" rx="6" fill="url(#goldCard)" stroke="#2A1A05" stroke-width="1"/>
+<rect x="560" y="1798" width="240" height="2" rx="1" fill="#C8A84B" opacity="0.7"/>
+<text x="680" y="1842" font-family="'Playfair Display', serif" font-size="28" font-weight="700" fill="#C8A84B" text-anchor="middle">&lt;3min</text>
+<text x="680" y="1861" font-family="'DM Mono', monospace" font-size="13" fill="#D4C4A4" text-anchor="middle" letter-spacing="1">DISASTER RTO</text>
+
+<rect x="820" y="1798" width="240" height="72" rx="6" fill="url(#redCard)" stroke="#2A0808" stroke-width="1"/>
+<rect x="820" y="1798" width="240" height="2" rx="1" fill="#C04A4A" opacity="0.7"/>
+<text x="940" y="1842" font-family="'Playfair Display', serif" font-size="28" font-weight="700" fill="#C07A7A" text-anchor="middle">&lt;1%</text>
+<text x="940" y="1861" font-family="'DM Mono', monospace" font-size="13" fill="#D49494" text-anchor="middle" letter-spacing="1">ERROR RATE ON DR</text>
+
+<rect x="1080" y="1798" width="290" height="72" rx="6" fill="url(#purpleCard)" stroke="#1A0A28" stroke-width="1"/>
+<rect x="1080" y="1798" width="290" height="2" rx="1" fill="#8B6BC4" opacity="0.7"/>
+<text x="1225" y="1842" font-family="'Playfair Display', serif" font-size="28" font-weight="700" fill="#8B6BC4" text-anchor="middle">59M+</text>
+<text x="1225" y="1861" font-family="'DM Mono', monospace" font-size="13" fill="#C4B4E4" text-anchor="middle" letter-spacing="1">PEAK CONCURRENT</text>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════════════ -->
+<rect x="0" y="1884" width="1400" height="96" fill="#09101E"/>
+<rect x="0" y="1884" width="1400" height="1" fill="url(#goldLine)" opacity="0.4"/>
+
+<rect x="58" y="1898" width="300" height="64" rx="5" fill="#0A0F1C" stroke="#141E32" stroke-width="1"/>
+<rect x="58" y="1898" width="300" height="2" rx="1" fill="#4A90C4" opacity="0.5"/>
+<text x="208" y="1922" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#4A90C4" text-anchor="middle">Cloud-Native</text>
+<text x="208" y="1942" font-family="'DM Mono', monospace" font-size="13" fill="#A1C1E1" text-anchor="middle">EKS · Kafka · S3 · Polyglot stores</text>
+
+<rect x="376" y="1898" width="300" height="64" rx="5" fill="#0A0F1C" stroke="#141E32" stroke-width="1"/>
+<rect x="376" y="1898" width="300" height="2" rx="1" fill="#52A86A" opacity="0.5"/>
+<text x="526" y="1922" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#52A86A" text-anchor="middle">Predictive Scaling</text>
+<text x="526" y="1942" font-family="'DM Mono', monospace" font-size="13" fill="#A4D4B4" text-anchor="middle">AI pre-warm · Project Hulk testing</text>
+
+<rect x="694" y="1898" width="300" height="64" rx="5" fill="#0A0F1C" stroke="#141E32" stroke-width="1"/>
+<rect x="694" y="1898" width="300" height="2" rx="1" fill="#C8A84B" opacity="0.5"/>
+<text x="844" y="1922" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#C8A84B" text-anchor="middle">Adaptive Delivery</text>
+<text x="844" y="1942" font-family="'DM Mono', monospace" font-size="13" fill="#D4C4A4" text-anchor="middle">Multi-CDN · ABR · HTTP/3 · QUIC</text>
+
+<rect x="1012" y="1898" width="330" height="64" rx="5" fill="#0A0F1C" stroke="#141E32" stroke-width="1"/>
+<rect x="1012" y="1898" width="330" height="2" rx="1" fill="#8B6BC4" opacity="0.5"/>
+<text x="1177" y="1922" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#8B6BC4" text-anchor="middle">Resilient Design</text>
+<text x="1177" y="1942" font-family="'DM Mono', monospace" font-size="13" fill="#C4B4E4" text-anchor="middle">Circuit breakers · Chaos engineering</text>
+
+<!-- bottom rule -->
+<rect x="0" y="1978" width="1400" height="2" fill="url(#goldLine)" opacity="0.25"/>
+
+</svg>
+</body>
+</html>
