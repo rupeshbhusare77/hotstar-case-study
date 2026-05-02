@@ -11,12 +11,13 @@ This repository contains our complete research, translated into an easy-to-under
 
 ## 📂 What's in this Repo?
 *   **The Infographic (`Hotstar_case_study_Infograph.pdf`):** A single-page, high-level visual breakdown of the entire architecture, from the API gateway to the data storage layer.
-*   **The Presentation (`Hotstar_case_study_final_.pptx`):** The detailed slide deck covering the business model, functional requirements, load testing, and cloud infrastructure.
+*   **The Presentation:** The detailed slide deck covering the business model, functional requirements, load testing, and cloud infrastructure. Due to file size limits, the presentation is hosted externally. 
+    *   🔗 [**Get the Full Presentation (Google Drive)**](https://docs.google.com/presentation/d/1ZLHoSJaNoq3jlO_TLx4e-50f9ujyqouW/edit?usp=sharing&ouid=102098631087423746617&rtpof=true&sd=true)
 
 ## 👁️ How to View the Work
-The best way to get a quick understanding of the system is to look at the **Infographic**. 
+The best way to get a quick understanding of the system is to look at the **Infographic**. You can get pdf here in repo itself, or [**click here**](link) for webview.
 
-If you want to dive deeper into the technical details and our research, feel free to download the full presentation file.
+If you want to dive deeper into the technical details and our research, get the ppt from [**here**](https://docs.google.com/presentation/d/1ZLHoSJaNoq3jlO_TLx4e-50f9ujyqouW/edit?usp=sharing&ouid=102098631087423746617&rtpof=true&sd=true)
 
 ## 🚀 Key Concepts Explored
 Through this case study, we learned about:
